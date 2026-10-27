@@ -220,12 +220,12 @@ The internal cache is evicted automatically and permissions are queried dynamica
 
 ### Build and Test
 ```bash
-./mvnw clean verify
+mvnw clean verify
 ```
 
 ### Run Locally
 ```bash
-./mvnw spring-boot:run
+mvnw spring-boot:run
 ```
 
 ### H2 Database Console

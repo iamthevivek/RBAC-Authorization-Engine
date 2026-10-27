@@ -46,32 +46,7 @@ Hardcoded role checks such as `hasRole('ADMIN')` or `hasAuthority('ROLE_ADMIN')`
 - **Durability**: All roles, permissions, and mappings are stored in a persistent **H2 database** (`jdbc:h2:file:./data/rbacdb`), retaining state across server restarts.
 
 ---
-
-## System Architecture & Authorization Flow
-
-```mermaid
-graph TD
-    Client["Client / cURL / Postman"] -->|HTTP Basic Authentication| SecurityFilter["Spring Security Filter Chain"]
-    SecurityFilter -->|Authenticate User| CustomUserDetailsService["CustomUserDetailsService"]
-    CustomUserDetailsService -->|Load Credentials & Permissions| DBUser["H2 Database (users, user_roles)"]
-    
-    SecurityFilter -->|Dispatch Request| Controller["REST Controllers (@PreAuthorize)"]
-    
-    Controller -->|Intercept Method Security| ExprHandler["MethodSecurityExpressionHandler"]
-    ExprHandler -->|hasPermission(null, 'ROLE_CREATE')| PermEval["CustomPermissionEvaluator"]
-    
-    PermEval -->|Check Permission| RbacService["RbacAuthorizationService"]
-    RbacService -->|Check Cache| Cache{"In-Memory Permission Cache"}
-    Cache -->|Hit| Decision["Evaluate Grant / Deny"]
-    Cache -->|Miss| DBQuery["Query user_roles & role_permissions"]
-    DBQuery -->|Update Cache| Decision
-    
-    Decision -->|Granted| ServiceImpl["Service Execution"]
-    Decision -->|Denied| GlobalExceptionHandler["GlobalExceptionHandler -> 403 Forbidden"]
-```
-
----
-
+ 
 ## Entities & Database Schema
 
 The database follows the entity model outlined in the assignment document:

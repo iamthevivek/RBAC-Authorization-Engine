@@ -47,3 +47,11 @@ out/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Environment & Secrets
+.env
+*.env
+.env.*
+secrets/
+*.pem
+*.key

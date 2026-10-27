@@ -1,5 +1,6 @@
 package com.techpulse.rbac.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,8 @@ public class User {
     @Column(name = "username", nullable = false, unique = true, length = 100)
     private String username;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     @Column(name = "password", nullable = false)
     private String password;
 

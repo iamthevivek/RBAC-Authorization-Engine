@@ -5,7 +5,7 @@ services:
     plan: free
     region: oregon
     dockerfilePath: Dockerfile
-    healthCheckPath: /actuator/health
+    healthCheckPath: /v3/api-docs
     envVars:
       - key: PORT
         value: 8080

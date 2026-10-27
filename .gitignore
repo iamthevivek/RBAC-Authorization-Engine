@@ -44,6 +44,10 @@ out/
 # VS Code
 .vscode/
 
+# Postman
+.postman/
+postman/
+
 # OS generated files
 .DS_Store
 Thumbs.db

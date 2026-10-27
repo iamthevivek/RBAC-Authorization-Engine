@@ -1,9 +1,7 @@
 package com.techpulse.rbac.controller;
 
 import com.techpulse.rbac.dto.response.UserResponse;
-import com.techpulse.rbac.security.JwtAuthenticationFilter;
 import com.techpulse.rbac.service.UserService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,12 +30,8 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Test
     @WithMockUser
-    @DisplayName("POST /users/{userId}/roles/{roleId} assigns role")
     void assignRoleToUser_succeeds() throws Exception {
         UserResponse response = UserResponse.builder().id(1L).username("testuser").roles(Set.of("ADMIN")).build();
         when(userService.assignRoleToUser(1L, 2L)).thenReturn(response);
@@ -51,7 +45,6 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("DELETE /users/{userId}/roles/{roleId} removes role")
     void removeRoleFromUser_succeeds() throws Exception {
         UserResponse response = UserResponse.builder().id(1L).username("testuser").roles(Set.of()).build();
         when(userService.removeRoleFromUser(1L, 2L)).thenReturn(response);
@@ -65,7 +58,6 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /users/{userId} returns user by ID")
     void getUserById_succeeds() throws Exception {
         UserResponse response = UserResponse.builder().id(1L).username("testuser").build();
         when(userService.getUserById(1L)).thenReturn(response);
@@ -79,7 +71,6 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /users returns all users")
     void getAllUsers_succeeds() throws Exception {
         UserResponse response = UserResponse.builder().id(1L).username("testuser").build();
         when(userService.getAllUsers()).thenReturn(List.of(response));

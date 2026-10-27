@@ -21,12 +21,8 @@ public class Role {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "description", length = 255)
-    private String description;
-
-    public Role(String name, String description) {
+    public Role(String name) {
         this.name = name;
-        this.description = description;
     }
 
     @Override
@@ -40,14 +36,5 @@ public class Role {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
     }
 }

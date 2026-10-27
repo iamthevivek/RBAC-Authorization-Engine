@@ -3,7 +3,6 @@ package com.techpulse.rbac.exception;
 import com.techpulse.rbac.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +37,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleValidationException returns 400 with validation errors map")
     void handleValidationException() {
         MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
         BindingResult bindingResult = mock(BindingResult.class);
@@ -55,7 +53,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleAccessDeniedException returns 403 Forbidden")
     void handleAccessDeniedException() {
         AccessDeniedException ex = new AccessDeniedException("Access is denied");
 
@@ -67,7 +64,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleAuthenticationException returns 401 Unauthorized")
     void handleAuthenticationException() {
         BadCredentialsException ex = new BadCredentialsException("Invalid password");
 
@@ -79,7 +75,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleResourceNotFoundException returns 404 Not Found")
     void handleResourceNotFoundException() {
         ResourceNotFoundException ex = new ResourceNotFoundException("Role not found");
 
@@ -91,7 +86,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleResourceAlreadyExistsException returns 409 Conflict")
     void handleResourceAlreadyExistsException() {
         ResourceAlreadyExistsException ex = new ResourceAlreadyExistsException("Role already exists");
 
@@ -103,7 +97,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleBadRequestException returns 400 Bad Request")
     void handleBadRequestException() {
         BadRequestException ex = new BadRequestException("Invalid parameter");
 
@@ -115,7 +108,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleGenericException returns 500 Internal Server Error")
     void handleGenericException() {
         RuntimeException ex = new RuntimeException("Unexpected error");
 

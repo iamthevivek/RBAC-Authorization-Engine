@@ -24,17 +24,13 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", length = 150)
-    private String email;
-
     @Column(name = "enabled", nullable = false)
     @Builder.Default
     private boolean enabled = true;
 
-    public User(String username, String password, String email) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
         this.enabled = true;
     }
 
@@ -49,15 +45,5 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", enabled=" + enabled +
-                '}';
     }
 }

@@ -3,9 +3,7 @@ package com.techpulse.rbac.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techpulse.rbac.dto.request.CreatePermissionRequest;
 import com.techpulse.rbac.dto.response.PermissionResponse;
-import com.techpulse.rbac.security.JwtAuthenticationFilter;
 import com.techpulse.rbac.service.PermissionService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,22 +37,16 @@ class PermissionControllerTest {
     @MockBean
     private PermissionService permissionService;
 
-    @MockBean
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Test
     @WithMockUser
-    @DisplayName("POST /permissions creates new permission")
     void createPermission_succeeds() throws Exception {
         CreatePermissionRequest request = CreatePermissionRequest.builder()
                 .name("REPORT_VIEW")
-                .description("View reports")
                 .build();
 
         PermissionResponse response = PermissionResponse.builder()
                 .id(1L)
                 .name("REPORT_VIEW")
-                .description("View reports")
                 .build();
 
         when(permissionService.createPermission(any(CreatePermissionRequest.class))).thenReturn(response);
@@ -71,7 +63,6 @@ class PermissionControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /permissions returns all permissions")
     void getAllPermissions_succeeds() throws Exception {
         PermissionResponse p = PermissionResponse.builder().id(1L).name("ROLE_CREATE").build();
         when(permissionService.getAllPermissions()).thenReturn(List.of(p));
@@ -85,7 +76,6 @@ class PermissionControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /permissions/{permissionId} returns permission by ID")
     void getPermissionById_succeeds() throws Exception {
         PermissionResponse p = PermissionResponse.builder().id(1L).name("ROLE_CREATE").build();
         when(permissionService.getPermissionById(1L)).thenReturn(p);

@@ -4,7 +4,6 @@ import com.techpulse.rbac.dto.response.SecureDataResponse;
 import com.techpulse.rbac.security.RbacAuthorizationService;
 import com.techpulse.rbac.service.impl.SecureDataServiceImpl;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +32,6 @@ class SecureDataServiceTest {
     }
 
     @Test
-    @DisplayName("getSecureData returns confidential payload for authenticated user")
     void getSecureData_authenticated() {
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken("bob", "credentials")
@@ -47,12 +45,10 @@ class SecureDataServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getAccessedBy()).isEqualTo("bob");
         assertThat(response.getRequiredPermission()).isEqualTo("SECURE_DATA_READ");
-        assertThat(response.getPayload()).containsKey("confidentialReportId");
-        assertThat(response.getPayload()).containsKey("financialMetrics");
+        assertThat(response.getData()).containsKey("confidentialReportId");
     }
 
     @Test
-    @DisplayName("getSecureData handles anonymous context safely")
     void getSecureData_anonymous() {
         SecurityContextHolder.clearContext();
 

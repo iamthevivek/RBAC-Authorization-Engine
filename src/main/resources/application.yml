@@ -26,21 +26,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
 
-# Security & JWT Configuration
 app:
-  jwt:
-    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-    expiration-ms: 86400000 # 24 hours
   security:
     cache-enabled: true
 
-# Logging Configuration
 logging:
   level:
     root: INFO
-    com.techpulse.rbac: DEBUG
-    org.springframework.security: INFO
+    com.techpulse.rbac: INFO

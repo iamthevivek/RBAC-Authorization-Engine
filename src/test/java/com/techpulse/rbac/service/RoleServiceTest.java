@@ -13,7 +13,6 @@ import com.techpulse.rbac.repository.RoleRepository;
 import com.techpulse.rbac.security.RbacAuthorizationService;
 import com.techpulse.rbac.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,16 +47,14 @@ class RoleServiceTest {
 
     @BeforeEach
     void setUp() {
-        role = Role.builder().id(1L).name("ADMIN").description("Admin Role").build();
-        permission = Permission.builder().id(10L).name("ROLE_CREATE").description("Create roles").build();
+        role = Role.builder().id(1L).name("ADMIN").build();
+        permission = Permission.builder().id(10L).name("ROLE_CREATE").build();
     }
 
     @Test
-    @DisplayName("createRole succeeds with valid unique name")
     void createRole_success() {
         CreateRoleRequest request = CreateRoleRequest.builder()
                 .name("MANAGER")
-                .description("Manager Role")
                 .build();
 
         when(roleRepository.existsByNameIgnoreCase("MANAGER")).thenReturn(false);
@@ -72,11 +69,9 @@ class RoleServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(2L);
         assertThat(response.getName()).isEqualTo("MANAGER");
-        assertThat(response.getDescription()).isEqualTo("Manager Role");
     }
 
     @Test
-    @DisplayName("createRole throws ResourceAlreadyExistsException when role name exists")
     void createRole_duplicateName_throwsException() {
         CreateRoleRequest request = CreateRoleRequest.builder()
                 .name("ADMIN")
@@ -90,7 +85,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("getRoleById returns role with permissions")
     void getRoleById_success() {
         when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
         when(rolePermissionRepository.findPermissionsByRoleId(1L)).thenReturn(List.of(permission));
@@ -103,7 +97,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("getRoleById throws ResourceNotFoundException when role does not exist")
     void getRoleById_notFound_throwsException() {
         when(roleRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -113,7 +106,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("getAllRoles returns all roles")
     void getAllRoles_success() {
         when(roleRepository.findAll()).thenReturn(List.of(role));
         when(rolePermissionRepository.findPermissionsByRoleId(1L)).thenReturn(List.of(permission));
@@ -125,7 +117,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("assignPermissionToRole successfully maps permission and evicts cache")
     void assignPermissionToRole_success() {
         when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
         when(permissionRepository.findById(10L)).thenReturn(Optional.of(permission));
@@ -140,7 +131,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("assignPermissionToRole throws ResourceAlreadyExistsException when already mapped")
     void assignPermissionToRole_alreadyMapped_throwsException() {
         when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
         when(permissionRepository.findById(10L)).thenReturn(Optional.of(permission));
@@ -152,7 +142,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("assignPermissionToRole throws ResourceNotFoundException on invalid role or permission ID")
     void assignPermissionToRole_notFound_throwsException() {
         when(roleRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -167,7 +156,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("removePermissionFromRole successfully removes permission and evicts cache")
     void removePermissionFromRole_success() {
         RolePermission rp = new RolePermission(1L, role, permission);
 
@@ -184,7 +172,6 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("removePermissionFromRole throws ResourceNotFoundException when mapping does not exist")
     void removePermissionFromRole_notMapped_throwsException() {
         when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
         when(permissionRepository.findById(10L)).thenReturn(Optional.of(permission));

@@ -8,7 +8,6 @@ import com.techpulse.rbac.exception.ResourceNotFoundException;
 import com.techpulse.rbac.repository.PermissionRepository;
 import com.techpulse.rbac.service.impl.PermissionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,15 +35,13 @@ class PermissionServiceTest {
 
     @BeforeEach
     void setUp() {
-        permission = Permission.builder().id(1L).name("ROLE_CREATE").description("Create roles").build();
+        permission = Permission.builder().id(1L).name("ROLE_CREATE").build();
     }
 
     @Test
-    @DisplayName("createPermission succeeds with valid unique name")
     void createPermission_success() {
         CreatePermissionRequest request = CreatePermissionRequest.builder()
                 .name("USER_EXPORT")
-                .description("Export users")
                 .build();
 
         when(permissionRepository.existsByNameIgnoreCase("USER_EXPORT")).thenReturn(false);
@@ -59,11 +56,9 @@ class PermissionServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(2L);
         assertThat(response.getName()).isEqualTo("USER_EXPORT");
-        assertThat(response.getDescription()).isEqualTo("Export users");
     }
 
     @Test
-    @DisplayName("createPermission throws ResourceAlreadyExistsException when permission name exists")
     void createPermission_duplicate_throwsException() {
         CreatePermissionRequest request = CreatePermissionRequest.builder()
                 .name("ROLE_CREATE")
@@ -77,7 +72,6 @@ class PermissionServiceTest {
     }
 
     @Test
-    @DisplayName("getPermissionById returns permission when found")
     void getPermissionById_success() {
         when(permissionRepository.findById(1L)).thenReturn(Optional.of(permission));
 
@@ -88,7 +82,6 @@ class PermissionServiceTest {
     }
 
     @Test
-    @DisplayName("getPermissionById throws ResourceNotFoundException when not found")
     void getPermissionById_notFound_throwsException() {
         when(permissionRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -98,7 +91,6 @@ class PermissionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllPermissions returns list of all permissions")
     void getAllPermissions_success() {
         when(permissionRepository.findAll()).thenReturn(List.of(permission));
 

@@ -11,8 +11,6 @@ import com.techpulse.rbac.repository.UserRepository;
 import com.techpulse.rbac.repository.UserRoleRepository;
 import com.techpulse.rbac.security.RbacAuthorizationService;
 import com.techpulse.rbac.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -58,11 +54,7 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole(user, role);
         userRoleRepository.save(userRole);
 
-        // Invalidate dynamic cache for this user immediately
         rbacAuthorizationService.evictUser(user.getUsername());
-
-        log.info("Assigned role '{}' (id={}) to user '{}' (id={})",
-                role.getName(), roleId, user.getUsername(), userId);
 
         return buildUserResponse(user);
     }
@@ -83,11 +75,7 @@ public class UserServiceImpl implements UserService {
 
         userRoleRepository.delete(userRole);
 
-        // Invalidate dynamic cache for this user immediately
         rbacAuthorizationService.evictUser(user.getUsername());
-
-        log.info("Removed role '{}' (id={}) from user '{}' (id={})",
-                role.getName(), roleId, user.getUsername(), userId);
 
         return buildUserResponse(user);
     }

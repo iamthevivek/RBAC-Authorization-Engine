@@ -2,7 +2,6 @@ package com.techpulse.rbac.security;
 
 import com.techpulse.rbac.repository.UserRoleRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +29,6 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("hasPermission by username returns true when permission exists in DB")
     void hasPermission_username_granted() {
         when(userRoleRepository.findPermissionNamesByUsername("admin"))
                 .thenReturn(Set.of("ROLE_CREATE", "USER_ROLE_ASSIGN"));
@@ -40,14 +38,12 @@ class RbacAuthorizationServiceTest {
         assertThat(result).isTrue();
         verify(userRoleRepository, times(1)).findPermissionNamesByUsername("admin");
 
-        // Second call should hit in-memory cache and not call repository again
         boolean secondResult = rbacAuthorizationService.hasPermission("admin", "ROLE_CREATE");
         assertThat(secondResult).isTrue();
         verifyNoMoreInteractions(userRoleRepository);
     }
 
     @Test
-    @DisplayName("hasPermission by username is case-insensitive")
     void hasPermission_username_caseInsensitive() {
         when(userRoleRepository.findPermissionNamesByUsername("admin"))
                 .thenReturn(Set.of("ROLE_CREATE"));
@@ -58,7 +54,6 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("hasPermission returns false when permission is absent or inputs invalid")
     void hasPermission_invalidInputs() {
         when(userRoleRepository.findPermissionNamesByUsername("user"))
                 .thenReturn(Set.of("SECURE_DATA_READ"));
@@ -72,7 +67,6 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("hasPermission by userId returns true when granted")
     void hasPermission_userId_granted() {
         when(userRoleRepository.findPermissionNamesByUserId(1L))
                 .thenReturn(Set.of("SECURE_DATA_READ"));
@@ -84,25 +78,20 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("evictUser invalidates specific user cache")
     void evictUser_clearsUserEntry() {
         when(userRoleRepository.findPermissionNamesByUsername("user1"))
                 .thenReturn(Set.of("SECURE_DATA_READ"));
 
-        // Populate cache
         rbacAuthorizationService.hasPermission("user1", "SECURE_DATA_READ");
         verify(userRoleRepository, times(1)).findPermissionNamesByUsername("user1");
 
-        // Evict user1
         rbacAuthorizationService.evictUser("user1");
 
-        // Subsequent check should query repository again
         rbacAuthorizationService.hasPermission("user1", "SECURE_DATA_READ");
         verify(userRoleRepository, times(2)).findPermissionNamesByUsername("user1");
     }
 
     @Test
-    @DisplayName("evictAll invalidates entire permission cache")
     void evictAll_clearsAllEntries() {
         when(userRoleRepository.findPermissionNamesByUsername("user1"))
                 .thenReturn(Set.of("SECURE_DATA_READ"));
@@ -122,7 +111,6 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("getEffectivePermissions returns empty set on null or blank username")
     void getEffectivePermissions_emptyInputs() {
         assertThat(rbacAuthorizationService.getEffectivePermissions((String) null)).isEmpty();
         assertThat(rbacAuthorizationService.getEffectivePermissions("")).isEmpty();
@@ -130,7 +118,6 @@ class RbacAuthorizationServiceTest {
     }
 
     @Test
-    @DisplayName("cache disabled queries database every time")
     void cacheDisabled_queriesEveryTime() {
         rbacAuthorizationService.setCacheEnabled(false);
         assertThat(rbacAuthorizationService.isCacheEnabled()).isFalse();

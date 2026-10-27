@@ -18,7 +18,6 @@ public class RoleResponse {
 
     private Long id;
     private String name;
-    private String description;
     @Builder.Default
     private Set<PermissionResponse> permissions = new HashSet<>();
 
@@ -32,7 +31,6 @@ public class RoleResponse {
         return RoleResponse.builder()
                 .id(role.getId())
                 .name(role.getName())
-                .description(role.getDescription())
                 .permissions(permissionResponses)
                 .build();
     }

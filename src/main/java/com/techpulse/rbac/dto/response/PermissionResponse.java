@@ -12,14 +12,12 @@ public class PermissionResponse {
 
     private Long id;
     private String name;
-    private String description;
 
     public static PermissionResponse fromEntity(Permission permission) {
         if (permission == null) return null;
         return PermissionResponse.builder()
                 .id(permission.getId())
                 .name(permission.getName())
-                .description(permission.getDescription())
                 .build();
     }
 }

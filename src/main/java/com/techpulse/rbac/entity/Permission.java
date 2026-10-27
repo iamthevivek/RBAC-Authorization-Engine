@@ -21,12 +21,8 @@ public class Permission {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "description", length = 255)
-    private String description;
-
-    public Permission(String name, String description) {
+    public Permission(String name) {
         this.name = name;
-        this.description = description;
     }
 
     @Override
@@ -40,14 +36,5 @@ public class Permission {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return "Permission{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
     }
 }

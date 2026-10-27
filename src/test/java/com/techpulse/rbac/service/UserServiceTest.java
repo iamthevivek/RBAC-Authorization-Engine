@@ -12,7 +12,6 @@ import com.techpulse.rbac.repository.UserRoleRepository;
 import com.techpulse.rbac.security.RbacAuthorizationService;
 import com.techpulse.rbac.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,12 +47,11 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder().id(1L).username("testuser").email("test@techpulse.com").enabled(true).build();
-        role = Role.builder().id(5L).name("USER").description("User Role").build();
+        user = User.builder().id(1L).username("testuser").enabled(true).build();
+        role = Role.builder().id(5L).name("USER").build();
     }
 
     @Test
-    @DisplayName("assignRoleToUser succeeds and evicts user cache")
     void assignRoleToUser_success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(roleRepository.findById(5L)).thenReturn(Optional.of(role));
@@ -73,7 +71,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("assignRoleToUser throws ResourceAlreadyExistsException when already assigned")
     void assignRoleToUser_duplicate_throwsException() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(roleRepository.findById(5L)).thenReturn(Optional.of(role));
@@ -85,7 +82,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("assignRoleToUser throws ResourceNotFoundException on non-existent user or role")
     void assignRoleToUser_notFound_throwsException() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -100,7 +96,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("removeRoleFromUser succeeds and evicts user cache")
     void removeRoleFromUser_success() {
         UserRole userRole = new UserRole(100L, user, role);
 
@@ -118,7 +113,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("removeRoleFromUser throws ResourceNotFoundException when mapping does not exist")
     void removeRoleFromUser_notAssigned_throwsException() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(roleRepository.findById(5L)).thenReturn(Optional.of(role));
@@ -130,7 +124,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getUserById and getUserByUsername succeed")
     void getUser_success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRoleRepository.findRolesByUserId(1L)).thenReturn(List.of(role));
@@ -145,7 +138,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getAllUsers returns all users with their roles and permissions")
     void getAllUsers_success() {
         when(userRepository.findAll()).thenReturn(List.of(user));
         when(userRoleRepository.findRolesByUserId(1L)).thenReturn(List.of(role));

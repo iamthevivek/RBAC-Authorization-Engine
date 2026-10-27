@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "techpulse-rbac-engine-v1",
+    "_postman_id": "techpulse-rbac-engine-v2",
     "name": "Dynamic RBAC Authorization Engine API",
-    "description": "Postman Collection for Dynamic RBAC Authorization Engine assignment testing and demonstration.",
+    "description": "Postman Collection for Dynamic RBAC Authorization Engine assignment testing and demonstration using HTTP Basic Authentication.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -10,92 +10,14 @@
       "key": "baseUrl",
       "value": "http://localhost:8080",
       "type": "string"
-    },
-    {
-      "key": "adminToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userToken",
-      "value": "",
-      "type": "string"
     }
   ],
   "item": [
     {
-      "name": "Authentication",
+      "name": "1. Roles Management (Role: ADMIN)",
       "item": [
         {
-          "name": "1. Login as Admin",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
-            }
-          }
-        },
-        {
-          "name": "2. Login as Standard User",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
-            }
-          }
-        },
-        {
-          "name": "3. Register New User",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"password123\",\n  \"email\": \"john@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Roles Management (Requires ROLE_CREATE / ROLE_READ)",
-      "item": [
-        {
-          "name": "Create New Role (POST /roles)",
+          "name": "POST /roles - Create Role (Admin)",
           "request": {
             "auth": {
               "type": "basic",
@@ -110,7 +32,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"SUPPORT_SPECIALIST\",\n  \"description\": \"Handles customer inquiries\"\n}"
+              "raw": "{\n  \"name\": \"OPERATOR\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/roles",
@@ -120,7 +42,32 @@
           }
         },
         {
-          "name": "Get All Roles (GET /roles)",
+          "name": "POST /roles - Create Role as User (Forbidden 403)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "user", "type": "string" },
+                { "key": "password", "value": "user123", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"UNAUTHORIZED_ROLE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            }
+          }
+        },
+        {
+          "name": "GET /roles - List All Roles",
           "request": {
             "auth": {
               "type": "basic",
@@ -138,7 +85,7 @@
           }
         },
         {
-          "name": "Assign Permission to Role (POST /roles/{roleId}/permissions/{permissionId})",
+          "name": "POST /roles/{roleId}/permissions/{permissionId} - Assign Permission to Role",
           "request": {
             "auth": {
               "type": "basic",
@@ -158,10 +105,10 @@
       ]
     },
     {
-      "name": "Permissions Management (Requires PERMISSION_CREATE / PERMISSION_READ)",
+      "name": "2. Permissions Management (Role: ADMIN)",
       "item": [
         {
-          "name": "Create New Permission (POST /permissions)",
+          "name": "POST /permissions - Create Permission (Admin)",
           "request": {
             "auth": {
               "type": "basic",
@@ -176,7 +123,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"REPORT_EXPORT\",\n  \"description\": \"Allows exporting financial and audit reports\"\n}"
+              "raw": "{\n  \"name\": \"AUDIT_LOG_EXPORT\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/permissions",
@@ -186,7 +133,7 @@
           }
         },
         {
-          "name": "Get All Permissions (GET /permissions)",
+          "name": "GET /permissions - List All Permissions",
           "request": {
             "auth": {
               "type": "basic",
@@ -206,10 +153,10 @@
       ]
     },
     {
-      "name": "User-Role Assignment (Requires USER_ROLE_ASSIGN)",
+      "name": "3. User-Role Assignment (Role: ADMIN)",
       "item": [
         {
-          "name": "Assign Role to User (POST /users/{userId}/roles/{roleId})",
+          "name": "POST /users/{userId}/roles/{roleId} - Assign Role to User",
           "request": {
             "auth": {
               "type": "basic",
@@ -220,37 +167,19 @@
             },
             "method": "POST",
             "url": {
-              "raw": "{{baseUrl}}/users/2/roles/1",
+              "raw": "{{baseUrl}}/users/3/roles/2",
               "host": ["{{baseUrl}}"],
-              "path": ["users", "2", "roles", "1"]
-            }
-          }
-        },
-        {
-          "name": "Get Current User Profile & Dynamic Permissions (GET /users/me)",
-          "request": {
-            "auth": {
-              "type": "basic",
-              "basic": [
-                { "key": "username", "value": "user", "type": "string" },
-                { "key": "password", "value": "user123", "type": "string" }
-              ]
-            },
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "me"]
+              "path": ["users", "3", "roles", "2"]
             }
           }
         }
       ]
     },
     {
-      "name": "Secured Resource (Requires SECURE_DATA_READ)",
+      "name": "4. Secure Resource (Role: USER)",
       "item": [
         {
-          "name": "Access Secure Data as USER (Success 200 OK)",
+          "name": "GET /secure-data - Access as USER (200 OK)",
           "request": {
             "auth": {
               "type": "basic",
@@ -268,7 +197,7 @@
           }
         },
         {
-          "name": "Access Secure Data as GUEST (Forbidden 403)",
+          "name": "GET /secure-data - Access as GUEST (Forbidden 403)",
           "request": {
             "auth": {
               "type": "basic",

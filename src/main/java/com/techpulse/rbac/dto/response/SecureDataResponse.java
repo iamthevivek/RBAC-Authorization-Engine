@@ -17,5 +17,5 @@ public class SecureDataResponse {
     private String requiredPermission;
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
-    private Map<String, Object> payload;
+    private Map<String, Object> data;
 }

@@ -7,10 +7,6 @@ import org.springframework.security.access.expression.method.DefaultMethodSecuri
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
-/**
- * Enables method-level security with @PreAuthorize and registers
- * our CustomPermissionEvaluator for dynamic runtime RBAC checks.
- */
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class MethodSecurityConfig {

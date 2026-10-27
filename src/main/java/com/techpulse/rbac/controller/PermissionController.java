@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller for Permission management.
- * Protected purely by dynamic permissions via CustomPermissionEvaluator.
- */
 @RestController
 @RequestMapping("/permissions")
 public class PermissionController {
@@ -26,10 +22,6 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    /**
-     * Creates a new permission.
-     * Evaluated dynamically: user must have 'PERMISSION_CREATE' permission in database.
-     */
     @PostMapping
     @PreAuthorize("hasPermission(null, 'PERMISSION_CREATE')")
     public ResponseEntity<ApiResponse<PermissionResponse>> createPermission(@Valid @RequestBody CreatePermissionRequest request) {
@@ -38,9 +30,6 @@ public class PermissionController {
                 .body(ApiResponse.success("Permission created successfully", response));
     }
 
-    /**
-     * Lists all permissions.
-     */
     @GetMapping
     @PreAuthorize("hasPermission(null, 'PERMISSION_READ')")
     public ResponseEntity<ApiResponse<List<PermissionResponse>>> getAllPermissions() {
@@ -48,9 +37,6 @@ public class PermissionController {
         return ResponseEntity.ok(ApiResponse.success("Permissions retrieved successfully", response));
     }
 
-    /**
-     * Retrieves a permission by ID.
-     */
     @GetMapping("/{permissionId}")
     @PreAuthorize("hasPermission(null, 'PERMISSION_READ')")
     public ResponseEntity<ApiResponse<PermissionResponse>> getPermissionById(@PathVariable Long permissionId) {

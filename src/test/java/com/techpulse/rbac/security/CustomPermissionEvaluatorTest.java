@@ -1,7 +1,6 @@
 package com.techpulse.rbac.security;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +33,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission returns true when rbac service grants direct permission")
     void hasPermission_directPermission_granted() {
         when(rbacAuthorizationService.hasPermission("john_doe", "ROLE_CREATE")).thenReturn(true);
 
@@ -45,7 +43,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission returns false when rbac service denies permission")
     void hasPermission_directPermission_denied() {
         when(rbacAuthorizationService.hasPermission("john_doe", "ROLE_CREATE")).thenReturn(false);
 
@@ -55,7 +52,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission resolves combined targetDomainObject and permission")
     void hasPermission_withTargetDomainObject_granted() {
         when(rbacAuthorizationService.hasPermission("john_doe", "CREATE")).thenReturn(false);
         when(rbacAuthorizationService.hasPermission("john_doe", "ROLE_CREATE")).thenReturn(true);
@@ -66,7 +62,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission returns false when authentication is null or unauthenticated")
     void hasPermission_unauthenticated() {
         Authentication anonymous = new AnonymousAuthenticationToken(
                 "key", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
@@ -79,7 +74,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission with targetId and targetType evaluates combined type permission")
     void hasPermission_withTargetIdAndType_granted() {
         when(rbacAuthorizationService.hasPermission("john_doe", "ROLE_DELETE")).thenReturn(true);
 
@@ -89,7 +83,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission with targetId and targetType falls back to direct permission")
     void hasPermission_withTargetIdAndType_fallbackDirect() {
         when(rbacAuthorizationService.hasPermission("john_doe", "ROLE_DELETE")).thenReturn(false);
         when(rbacAuthorizationService.hasPermission("john_doe", "DELETE")).thenReturn(true);
@@ -100,7 +93,6 @@ class CustomPermissionEvaluatorTest {
     }
 
     @Test
-    @DisplayName("hasPermission with targetId returns false when unauthenticated or null")
     void hasPermission_withTargetId_invalidInputs() {
         assertThat(permissionEvaluator.hasPermission(null, 1L, "Role", "DELETE")).isFalse();
         assertThat(permissionEvaluator.hasPermission(authenticatedUser, 1L, "Role", null)).isFalse();

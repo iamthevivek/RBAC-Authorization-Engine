@@ -12,8 +12,6 @@ import com.techpulse.rbac.repository.RolePermissionRepository;
 import com.techpulse.rbac.repository.RoleRepository;
 import com.techpulse.rbac.security.RbacAuthorizationService;
 import com.techpulse.rbac.service.RoleService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-
-    private static final Logger log = LoggerFactory.getLogger(RoleServiceImpl.class);
 
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
@@ -50,11 +46,9 @@ public class RoleServiceImpl implements RoleService {
 
         Role role = Role.builder()
                 .name(roleName)
-                .description(request.getDescription())
                 .build();
 
         Role savedRole = roleRepository.save(role);
-        log.info("Created new role: id={}, name={}", savedRole.getId(), savedRole.getName());
         return RoleResponse.fromEntity(savedRole, List.of());
     }
 
@@ -96,11 +90,7 @@ public class RoleServiceImpl implements RoleService {
         RolePermission rolePermission = new RolePermission(role, permission);
         rolePermissionRepository.save(rolePermission);
 
-        // Invalidate dynamic RBAC cache so changes apply immediately at runtime
         rbacAuthorizationService.evictAll();
-
-        log.info("Assigned permission '{}' (id={}) to role '{}' (id={})",
-                permission.getName(), permissionId, role.getName(), roleId);
 
         List<Permission> permissions = rolePermissionRepository.findPermissionsByRoleId(roleId);
         return RoleResponse.fromEntity(role, permissions);
@@ -122,11 +112,7 @@ public class RoleServiceImpl implements RoleService {
 
         rolePermissionRepository.delete(rolePermission);
 
-        // Invalidate dynamic RBAC cache so revocation is immediate at runtime
         rbacAuthorizationService.evictAll();
-
-        log.info("Removed permission '{}' (id={}) from role '{}' (id={})",
-                permission.getName(), permissionId, role.getName(), roleId);
 
         List<Permission> permissions = rolePermissionRepository.findPermissionsByRoleId(roleId);
         return RoleResponse.fromEntity(role, permissions);

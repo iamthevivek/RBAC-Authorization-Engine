@@ -30,7 +30,6 @@ public class SecureDataServiceImpl implements SecureDataService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("confidentialReportId", "REP-TECHPULSE-2026-X99");
         payload.put("dataClassification", "CONFIDENTIAL / INTERNAL RESTRICTED");
-        payload.put("financialMetrics", Map.of("revenue", 12500000, "currency", "USD", "status", "AUDITED"));
         payload.put("activeDatabasePermissions", effectivePermissions);
 
         return SecureDataResponse.builder()
@@ -38,7 +37,7 @@ public class SecureDataServiceImpl implements SecureDataService {
                 .accessedBy(username)
                 .requiredPermission("SECURE_DATA_READ")
                 .timestamp(LocalDateTime.now())
-                .payload(payload)
+                .data(payload)
                 .build();
     }
 }

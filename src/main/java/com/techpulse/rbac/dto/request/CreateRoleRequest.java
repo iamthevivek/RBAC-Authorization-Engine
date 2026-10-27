@@ -16,7 +16,4 @@ public class CreateRoleRequest {
     @Size(min = 2, max = 50, message = "Role name must be between 2 and 50 characters")
     @Pattern(regexp = "^[A-Za-z0-9_]+$", message = "Role name must only contain alphanumeric characters and underscores")
     private String name;
-
-    @Size(max = 255, message = "Description cannot exceed 255 characters")
-    private String description;
 }

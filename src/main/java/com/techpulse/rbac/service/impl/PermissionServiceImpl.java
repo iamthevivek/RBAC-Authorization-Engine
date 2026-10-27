@@ -7,8 +7,6 @@ import com.techpulse.rbac.exception.ResourceAlreadyExistsException;
 import com.techpulse.rbac.exception.ResourceNotFoundException;
 import com.techpulse.rbac.repository.PermissionRepository;
 import com.techpulse.rbac.service.PermissionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class PermissionServiceImpl implements PermissionService {
-
-    private static final Logger log = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
     private final PermissionRepository permissionRepository;
 
@@ -36,11 +32,9 @@ public class PermissionServiceImpl implements PermissionService {
 
         Permission permission = Permission.builder()
                 .name(permissionName)
-                .description(request.getDescription())
                 .build();
 
         Permission saved = permissionRepository.save(permission);
-        log.info("Created new permission: id={}, name={}", saved.getId(), saved.getName());
         return PermissionResponse.fromEntity(saved);
     }
 

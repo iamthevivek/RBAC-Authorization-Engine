@@ -2,15 +2,12 @@ package com.techpulse.rbac.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techpulse.rbac.dto.response.ErrorResponse;
-import com.techpulse.rbac.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.time.LocalDateTime;
 
@@ -29,12 +25,9 @@ import java.time.LocalDateTime;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final ObjectMapper objectMapper;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          ObjectMapper objectMapper) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public SecurityConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -44,17 +37,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin) // Allow H2 Console
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -64,20 +52,16 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
                         .requestMatchers(
-                                "/auth/**",
                                 "/h2-console/**",
                                 "/actuator/health",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        // All other endpoints require authentication; granular authorization is evaluated via method security
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()) // Support HTTP Basic authentication
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
@@ -92,7 +76,7 @@ public class SecurityConfig {
                     .timestamp(LocalDateTime.now())
                     .status(HttpStatus.UNAUTHORIZED.value())
                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .message("Authentication required: Please provide valid credentials via HTTP Basic or Bearer token.")
+                    .message("Authentication required: Please provide valid credentials via HTTP Basic authentication.")
                     .path(request.getRequestURI())
                     .build();
 

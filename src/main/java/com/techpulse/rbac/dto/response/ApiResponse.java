@@ -35,12 +35,4 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(T data) {
         return success("Operation successful", data);
     }
-
-    public static <T> ApiResponse<T> messageOnly(String message) {
-        return ApiResponse.<T>builder()
-                .success(true)
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
 }

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techpulse.rbac.dto.request.CreateRoleRequest;
 import com.techpulse.rbac.dto.response.PermissionResponse;
 import com.techpulse.rbac.dto.response.RoleResponse;
-import com.techpulse.rbac.security.JwtAuthenticationFilter;
 import com.techpulse.rbac.service.RoleService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,7 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoleController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -39,22 +38,16 @@ class RoleControllerTest {
     @MockBean
     private RoleService roleService;
 
-    @MockBean
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Test
     @WithMockUser
-    @DisplayName("POST /roles calls roleService and returns 201 Created")
     void createRole_succeeds() throws Exception {
         CreateRoleRequest request = CreateRoleRequest.builder()
                 .name("AUDITOR")
-                .description("Auditor role")
                 .build();
 
         RoleResponse response = RoleResponse.builder()
                 .id(1L)
                 .name("AUDITOR")
-                .description("Auditor role")
                 .build();
 
         when(roleService.createRole(any(CreateRoleRequest.class))).thenReturn(response);
@@ -71,7 +64,6 @@ class RoleControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /roles returns all roles")
     void getAllRoles_succeeds() throws Exception {
         RoleResponse r1 = RoleResponse.builder().id(1L).name("ADMIN").build();
         when(roleService.getAllRoles()).thenReturn(List.of(r1));
@@ -85,7 +77,6 @@ class RoleControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("GET /roles/{roleId} returns role by ID")
     void getRoleById_succeeds() throws Exception {
         RoleResponse r1 = RoleResponse.builder().id(1L).name("ADMIN").build();
         when(roleService.getRoleById(1L)).thenReturn(r1);
@@ -99,7 +90,6 @@ class RoleControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("POST /roles/{roleId}/permissions/{permissionId} assigns permission")
     void assignPermissionToRole_succeeds() throws Exception {
         RoleResponse r1 = RoleResponse.builder()
                 .id(1L)
@@ -118,7 +108,6 @@ class RoleControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("DELETE /roles/{roleId}/permissions/{permissionId} removes permission")
     void removePermissionFromRole_succeeds() throws Exception {
         RoleResponse r1 = RoleResponse.builder().id(1L).name("ADMIN").build();
         when(roleService.removePermissionFromRole(1L, 2L)).thenReturn(r1);

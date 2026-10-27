@@ -18,7 +18,7 @@ spring:
 
   h2:
     console:
-      enabled: ${SPRING_H2_CONSOLE_ENABLED:false}
+      enabled: ${SPRING_H2_CONSOLE_ENABLED:true}
       path: /h2-console
       settings:
         web-allow-others: false

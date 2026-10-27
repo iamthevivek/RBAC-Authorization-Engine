@@ -53,6 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/h2-console",
                                 "/h2-console/**",
                                 "/actuator/health",
                                 "/v3/api-docs/**",

@@ -197,20 +197,30 @@
           }
         },
         {
-          "name": "GET /secure-data - Access as GUEST (Forbidden 403)",
+          "name": "POST /roles - Access as USER (Forbidden 403)",
           "request": {
             "auth": {
               "type": "basic",
               "basic": [
-                { "key": "username", "value": "guest", "type": "string" },
-                { "key": "password", "value": "guest123", "type": "string" }
+                { "key": "username", "value": "user", "type": "string" },
+                { "key": "password", "value": "user123", "type": "string" }
               ]
             },
-            "method": "GET",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MANAGER\"\n}"
+            },
             "url": {
-              "raw": "{{baseUrl}}/secure-data",
+              "raw": "{{baseUrl}}/roles",
               "host": ["{{baseUrl}}"],
-              "path": ["secure-data"]
+              "path": ["roles"]
             }
           }
         }

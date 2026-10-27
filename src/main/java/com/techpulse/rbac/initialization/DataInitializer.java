@@ -103,8 +103,6 @@ public class DataInitializer implements CommandLineRunner {
 
         User standardUser = getOrCreateUser("user", "user123");
         linkUserRole(standardUser, roles.get("USER"));
-
-        getOrCreateUser("guest", "guest123");
     }
 
     private User getOrCreateUser(String username, String rawPassword) {

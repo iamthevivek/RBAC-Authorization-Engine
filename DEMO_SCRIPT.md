@@ -42,21 +42,19 @@ Use this script as your guide when recording your 5-minute Loom, OBS, or screenc
 ### [2:00 - 3:45] Part 3: Live API Demonstration
 *(Action: Switch to Postman with the pre-imported `RBAC_Authorization_Engine.postman_collection.json`)*
 
-> *"Now let's demonstrate the system in action.*
+> *"Now let's demonstrate the system in action using HTTP Basic Authentication.*
 >
-> **Step 1: Authentication & Token Issuance**
-> *First, we send a request to `POST /auth/login` as `user`. Notice we receive a secure JWT token, along with the user's active roles and dynamic permissions.*
+> **Step 1: Accessing Secured Resource**
+> *First, we call `GET /secure-data` using user credentials (`user:user123`). Because the `USER` role has the `SECURE_DATA_READ` permission mapped in the database, the request succeeds with 200 OK and returns the confidential payload.*
 >
-> **Step 2: Accessing Secured Resource**
-> *Next, we call `GET /secure-data` using user credentials. Because the `USER` role has the `SECURE_DATA_READ` permission mapped in the database, the request succeeds with a 200 OK and returns the confidential payload.*
+> **Step 2: Negative Access Control (403 Forbidden)**
+> *Now let's try calling `POST /roles` as `user`. Since the `USER` role does NOT have `ROLE_CREATE` permission, the engine instantly blocks the request and returns a structured 403 Forbidden error response from our `GlobalExceptionHandler`.*
 >
-> **Step 3: Negative Access Control (403 Forbidden)**
-> *Now let's try calling `POST /roles` as `user`. Since the `user` does NOT have `ROLE_CREATE` permission, the engine instantly blocks the request and returns a structured 403 Forbidden error response from our `GlobalExceptionHandler`.*
+> **Step 3: Admin Management**
+> *Next, we call `POST /roles` as `admin` (`admin:admin123`). Because `admin` has the `ADMIN` role with `ROLE_CREATE` permission, the new role is created with 201 Created.*
 >
 > **Step 4: Real-Time Dynamic RBAC Modification (No Restart)**
-> *Here is the most powerful feature. We have a `guest` user with no permissions who currently gets 403 on `/secure-data`.*
-> *As the admin, we call `POST /users/{guestId}/roles/{userRoleId}` to dynamically assign the `USER` role to `guest`.*
-> *Now, when `guest` immediately retries `GET /secure-data`, the request succeeds with 200 OK—without restarting the server! The cache was evicted and the updated permissions were evaluated at runtime.*
+> *Here is the most powerful feature. When an admin calls `POST /users/{userId}/roles/{roleId}` or `POST /roles/{roleId}/permissions/{permissionId}`, the engine immediately evicts the runtime cache and resolves permissions on subsequent requests without restarting the application!*
 >
 > **Step 5: Request Validation**
 > *Finally, if an admin attempts to create a role with a blank name or invalid characters via `POST /roles`, our JSR-380 validation catches it and returns a 400 Bad Request with field-level error messages."*
@@ -66,11 +64,11 @@ Use this script as your guide when recording your 5-minute Loom, OBS, or screenc
 ### [3:45 - 4:30] Part 4: Code Quality, JaCoCo Coverage & SonarQube
 *(Action: Open terminal and display JaCoCo coverage report in browser)*
 
-> *"For code quality and verification, we have written 82 comprehensive unit and integration tests covering all controllers, security filters, services, and exception handlers.*
+> *"For code quality and verification, we have written 71 comprehensive unit and integration tests covering all controllers, security filters, services, and exception handlers.*
 >
-> *Running `./mvnw clean verify` executes the entire suite. As you can see on the screen:*
-> - *Tests run: 82, Failures: 0, Errors: 0.*
-> - *Our JaCoCo code coverage report shows **84% overall line coverage**, with our controllers, services, and security evaluator exceeding 94% to 100% coverage, comfortably surpassing the 80% requirement.*
+> *Running `./mvnw clean test` executes the entire suite. As you can see on the screen:*
+> - *Tests run: 71, Failures: 0, Errors: 0.*
+> - *Our JaCoCo code coverage report shows **over 82% line coverage**, comfortably surpassing the 80% requirement.*
 > - *We have also configured SonarQube with `sonar-project.properties` and a complete GitHub Actions CI workflow in `.github/workflows/ci-sonar.yml` to ensure continuous code inspection."*
 
 ---

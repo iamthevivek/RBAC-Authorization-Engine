@@ -150,10 +150,14 @@ class RbacAuthorizationEngineIntegrationTest {
 
     @Test
     void assignRoleToUser_asAdmin_succeeds() throws Exception {
-        User guest = userRepository.findByUsernameIgnoreCase("guest").orElseThrow();
+        User targetUser = userRepository.save(User.builder()
+                .username("newuser")
+                .password(passwordEncoder.encode("password123"))
+                .enabled(true)
+                .build());
         Role userRole = roleRepository.findByNameIgnoreCase("USER").orElseThrow();
 
-        mockMvc.perform(post("/users/" + guest.getId() + "/roles/" + userRole.getId())
+        mockMvc.perform(post("/users/" + targetUser.getId() + "/roles/" + userRole.getId())
                         .with(httpBasic("admin", "admin123")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))

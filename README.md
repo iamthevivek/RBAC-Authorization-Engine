@@ -137,9 +137,8 @@ On application startup, `DataInitializer` seeds persistent data into the H2 data
 
 | Username | Password | Assigned Role | Effective Dynamic Permissions |
 | :--- | :--- | :--- | :--- |
-| `admin` | `admin123` | `ADMIN` | All 10 permissions |
+| `admin` | `admin123` | `ADMIN` | `ROLE_CREATE`, `PERMISSION_CREATE`, `ROLE_PERMISSION_ASSIGN`, `USER_ROLE_ASSIGN` |
 | `user` | `user123` | `USER` | `SECURE_DATA_READ` |
-| `guest` | `guest123` | *(None)* | *(None)* - Denied with 403 Forbidden |
 
 ---
 
@@ -208,9 +207,11 @@ curl -u user:user123 -X GET http://localhost:8080/secure-data
 }
 ```
 
-If an unauthorized user (`guest`) requests `/secure-data`:
+If a user without the required permission (e.g., standard `user` attempting an admin endpoint like `POST /roles`) makes a request:
 ```bash
-curl -u guest:guest123 -X GET http://localhost:8080/secure-data
+curl -u user:user123 -X POST http://localhost:8080/roles \
+  -H "Content-Type: application/json" \
+  -d '{"name": "AUDITOR"}'
 ```
 **Response (403 Forbidden)**:
 ```json
@@ -219,7 +220,7 @@ curl -u guest:guest123 -X GET http://localhost:8080/secure-data
   "status": 403,
   "error": "Forbidden",
   "message": "Access denied: You do not have the required dynamic permission to perform this action.",
-  "path": "/secure-data"
+  "path": "/roles"
 }
 ```
 
@@ -227,9 +228,9 @@ curl -u guest:guest123 -X GET http://localhost:8080/secure-data
 
 ## Dynamic Runtime Permission Demonstration (Zero Restart)
 
-1. `guest` attempts `GET /secure-data` $\rightarrow$ **403 Forbidden** (no permissions).
-2. `admin` calls `POST /users/{guestId}/roles/{userRoleId}` to assign role `USER` to `guest`.
-3. `guest` immediately retries `GET /secure-data` $\rightarrow$ **200 OK**!
+1. `user` attempts `POST /roles` $\rightarrow$ **403 Forbidden** (Role `USER` only has `SECURE_DATA_READ`).
+2. `admin` calls `POST /users/2/roles/1` to assign role `ADMIN` to `user` (or assigns the permission to role `USER`).
+3. `user` immediately retries `POST /roles` $\rightarrow$ **201 Created**!
 The internal cache is evicted automatically and permissions are queried dynamically from the database.
 
 ---

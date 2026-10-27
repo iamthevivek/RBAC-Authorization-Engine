@@ -6,6 +6,8 @@
 [![Tests](https://img.shields.io/badge/Tests-71%20Passed-success.svg)]()
 [![Coverage](https://img.shields.io/badge/JaCoCo%20Coverage-82%25-blue.svg)]()
 [![SonarQube](https://img.shields.io/badge/SonarQube-Integrated-4C9BD4.svg)](https://www.sonarqube.org/)
+[![Render](https://img.shields.io/badge/Render-Live%20Deployed-brightgreen.svg)](https://dynamic-rbac-authorization-engine.onrender.com)
+[![Swagger UI](https://img.shields.io/badge/Swagger%20UI-Live-green.svg)](https://dynamic-rbac-authorization-engine.onrender.com/swagger-ui.html)
 
 ---
 
@@ -236,6 +238,10 @@ The internal cache is evicted automatically and permissions are queried dynamica
 ---
 
 ## Setup & Running Instructions
+
+### Live Cloud Deployment (Render)
+- **Live Base URL**: [https://dynamic-rbac-authorization-engine.onrender.com](https://dynamic-rbac-authorization-engine.onrender.com)
+- **Interactive Swagger UI**: [https://dynamic-rbac-authorization-engine.onrender.com/swagger-ui.html](https://dynamic-rbac-authorization-engine.onrender.com/swagger-ui.html)
 
 ### Build and Test
 ```bash

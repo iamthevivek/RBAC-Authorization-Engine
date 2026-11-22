@@ -13,6 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+package com.techpulse.rbac.service.impl;
+
+import com.techpulse.rbac.dto.request.CreatePermissionRequest;
+import com.techpulse.rbac.dto.response.PermissionResponse;
+import com.techpulse.rbac.entity.Permission;
+import com.techpulse.rbac.exception.ResourceAlreadyExistsException;
+import com.techpulse.rbac.exception.ResourceNotFoundException;
+import com.techpulse.rbac.repository.PermissionRepository;
+import com.techpulse.rbac.service.PermissionService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
